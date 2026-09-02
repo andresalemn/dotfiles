@@ -1,0 +1,20 @@
+# dotfiles
+
+A shared repository for terminal configurations and utility scripts. Configs are organized per-person under `people/` so each contributor keeps their own setup self-contained, while reusable utility scripts live under `scripts/` sorted by category — making it easy to browse, borrow, and contribute regardless of whose machine you're on.
+
+## Structure
+
+| Folder | Purpose |
+|--------|---------|
+| `people/` | One sub-folder per contributor (e.g. `people/alice/`). Each person's folder holds their own dotfiles and configs, organized by tool name (e.g. `wezterm/`, `starship/`, `tmux/`). |
+| `scripts/` | Shared utility scripts organized by category: `system/`, `dev/`, `network/`, `media/`, and `fun/`. See [`scripts/README.md`](scripts/README.md) for the full index. |
+
+## Contributors
+
+| Name | Setup Highlights | Folder |
+|------|-----------------|--------|
+|      |                 |        |
+
+## Adding Your Own Stuff
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for step-by-step instructions on how to add your personal folder and contribute scripts.
