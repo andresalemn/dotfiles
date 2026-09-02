@@ -14,7 +14,7 @@ A shared repository for terminal configurations and utility scripts. Configs are
 
 | Name | Setup Highlights | Folder |
 |------|-----------------|--------|
-|      |                 |        |
+| alemaniaco | WezTerm + Starship (Monokai dark purple palette, contextual ROS 2 workspace module, battery status) | [`people/alemaniaco/`](people/alemaniaco/) |
 
 ## Adding Your Own Stuff
 
