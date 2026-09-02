@@ -8,6 +8,7 @@ A shared repository for terminal configurations and utility scripts. Configs are
 |--------|---------|
 | `people/` | One sub-folder per contributor (e.g. `people/alice/`). Each person's folder holds their own dotfiles and configs, organized by tool name (e.g. `wezterm/`, `starship/`, `tmux/`). |
 | `scripts/` | Shared utility scripts organized by category: `system/`, `dev/`, `network/`, `media/`, and `fun/`. See [`scripts/README.md`](scripts/README.md) for the full index. |
+| `docs/` | Guides and documentation. See [`docs/BEGINNERS_GUIDE.md`](docs/BEGINNERS_GUIDE.md) for a beginner-friendly overview of Linux terminals and tools. |
 
 ## Contributors
 

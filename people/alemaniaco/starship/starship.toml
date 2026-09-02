@@ -1,0 +1,127 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+[░▒▓](#ae81ff)\
+$os\
+[](bg:#3b3752 fg:#ae81ff)\
+$directory\
+[](fg:#3b3752 bg:#78dce8)\
+$git_branch\
+$git_status\
+[](fg:#78dce8 bg:#2b2735)\
+$nodejs\
+$bun\
+$rust\
+$golang\
+$php\
+$battery\
+[](fg:#2b2735 bg:#1a1723)\
+$time\
+[ ](fg:#1a1723)\
+\n$character"""
+
+[directory]
+style = "fg:#f8f8f2 bg:#3b3752"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
+[git_branch]
+symbol = ""
+style = "bg:#78dce8"
+format = '[[ $symbol $branch ](fg:#221f2b bg:#78dce8)]($style)'
+
+[git_status]
+style = "bg:#78dce8"
+format = '[[($all_status$ahead_behind )](fg:#221f2b bg:#78dce8)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:#2b2735"
+format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
+
+[bun]
+symbol = ""
+style = "bg:#2b2735"
+format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:#2b2735"
+format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:#2b2735"
+format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
+
+[php]
+symbol = ""
+style = "bg:#2b2735"
+format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+style = "bg:#1a1723"
+format = '[[  $time ](fg:#75715e bg:#1a1723)]($style)'
+
+[os]
+style = "bg:#ae81ff fg:#221f2b"
+format = "[ $symbol ]($style)"
+disabled = false
+
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+AOSC = ""
+Arch = "󰣇"
+Artix = "󰣇"
+EndeavourOS = ""
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+Pop = ""
+
+[battery]
+full_symbol = "󰁹 "
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂀 "
+unknown_symbol = "󰁽 "
+empty_symbol = "󰂎 "
+format = '[[ $symbol$percentage ](fg:#ae81ff bg:#2b2735)]($style)'
+
+[[battery.display]]
+threshold = 100
+style = "bg:#2b2735"
+
+[[battery.display]]
+threshold = 20
+style = "bg:#2b2735"
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂀 "
+
+[custom.ros]
+symbol = "󰚩 "
+style = "bg:#2b2735"
+format = '[$symbol$output ](fg:#ae81ff bg:#2b2735)'
+command = 'echo "$ROS_DISTRO"'
+when = 'test -n "$AMENT_PREFIX_PATH" || test -n "$COLCON_PREFIX_PATH"'
