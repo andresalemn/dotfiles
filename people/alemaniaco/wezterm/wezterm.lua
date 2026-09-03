@@ -4,8 +4,13 @@ local config = wezterm.config_builder()
 -- Cross-platform shell configuration:
 -- On Windows, WezTerm defaults to cmd.exe. We set default_prog to PowerShell so Starship loads automatically.
 -- On Linux/macOS, leaving default_prog unset allows WezTerm to use the user's $SHELL (bash/zsh).
-if wezterm.target_triple:find("windows") then
+local is_windows = wezterm.target_triple:find("windows") ~= nil
+
+if is_windows then
   config.default_prog = { "powershell.exe" }
+  config.font_size = 14
+else
+  config.font_size = 16
 end
 
 
@@ -36,7 +41,6 @@ config.colors = {
 }
 
 config.font = wezterm.font("JetBrainsMonoNL Nerd Font", { weight = "Medium" })
-config.font_size = 16
 config.line_height = 1
 
 config.window_decorations = "RESIZE"
