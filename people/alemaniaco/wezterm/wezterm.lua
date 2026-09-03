@@ -1,6 +1,15 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
+-- Cross-platform shell configuration:
+-- On Windows, WezTerm defaults to cmd.exe. We set default_prog to PowerShell so Starship loads automatically.
+-- On Linux/macOS, leaving default_prog unset allows WezTerm to use the user's $SHELL (bash/zsh).
+if wezterm.target_triple:find("windows") then
+  config.default_prog = { "powershell.exe" }
+end
+
+
+
 -- Custom desaturated purple-dark, Monokai-vivid-text palette
 config.colors = {
   foreground = "#f8f8f2",

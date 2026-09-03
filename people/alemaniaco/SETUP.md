@@ -8,6 +8,7 @@ My terminal setup: WezTerm + Starship, dark purple palette (Monokai-vivid-inspir
 
 Make sure these are installed before linking:
 
+### Linux
 ```bash
 # Starship
 curl -sS https://starship.rs/install.sh | sh
@@ -21,11 +22,25 @@ fc-cache -fv
 # WezTerm — install from https://wezfurlong.org/wezterm/installation/linux/
 ```
 
+### Windows
+```powershell
+# Starship (via winget)
+winget install Starship.Starship
+
+# JetBrainsMono Nerd Font
+# Download zip from https://www.nerdfonts.com/font-downloads, extract and install TTF files.
+
+# WezTerm
+# Download installer from https://wezfurlong.org/wezterm/installation/windows.html or `winget install wez.wezterm`
+```
+
 ---
 
-## One-Time Install (Symlinks)
+## One-Time Install (Links & Shell Setup)
 
-Run this **once**. The config files stay in this repo — the symlinks just point to them.
+Run this **once**. The config files stay in this repo — links point back to them.
+
+### Linux (Symlinks)
 
 ```bash
 # Starship
@@ -36,32 +51,48 @@ ln -sf ~/Sandbox/dotfiles/people/alemaniaco/starship/starship.toml \
 mkdir -p ~/.config/wezterm
 ln -sf ~/Sandbox/dotfiles/people/alemaniaco/wezterm/wezterm.lua \
         ~/.config/wezterm/wezterm.lua
-```
 
-Then add Starship to your shell RC (only needed once):
-
-```bash
-# bash → add to ~/.bashrc
-echo 'eval "$(starship init bash)"' >> ~/.bashrc
-
-# zsh → add to ~/.zshrc
-echo 'eval "$(starship init zsh)"' >> ~/.zshrc
-```
-
-Reload your shell:
-
-```bash
+# Shell integration (bash/zsh)
+echo 'eval "$(starship init bash)"' >> ~/.bashrc   # for bash
+echo 'eval "$(starship init zsh)"' >> ~/.zshrc     # for zsh
 exec $SHELL
 ```
 
-### Verify symlinks are set up correctly
+### Windows (Hard Links / Symlinks & PowerShell)
 
-```bash
-ls -la ~/.config/starship.toml
-ls -la ~/.config/wezterm/wezterm.lua
+On Windows without Developer Mode, run in `cmd.exe` or PowerShell to create hard links:
+
+```powershell
+# Create config folders
+New-Item -ItemType Directory -Force -Path "$HOME\.config\wezterm"
+
+# Create hard links (works without Admin/Developer Mode)
+cmd /c "mklink /H %USERPROFILE%\.config\starship.toml C:\Users\52477\Documents\Sandbox\projects\dotfiles\people\alemaniaco\starship\starship.toml"
+cmd /c "mklink /H %USERPROFILE%\.config\wezterm\wezterm.lua C:\Users\52477\Documents\Sandbox\projects\dotfiles\people\alemaniaco\wezterm\wezterm.lua"
 ```
 
-Both should point back to `~/Sandbox/dotfiles/people/alemaniaco/...`.
+Then add Starship initialization to your PowerShell `$PROFILE`:
+
+```powershell
+# Add to $PROFILE
+if (Get-Command starship -ErrorAction SilentlyContinue) {
+    Invoke-Expression (&starship init powershell)
+} elseif (Test-Path 'C:\Program Files\starship\bin\starship.exe') {
+    Invoke-Expression (&'C:\Program Files\starship\bin\starship.exe' init powershell)
+}
+```
+
+---
+
+## Linux vs Windows Notes
+
+- **Default Shell**:
+  - **Linux/macOS**: WezTerm defaults to your user's `$SHELL` (bash/zsh).
+  - **Windows**: WezTerm defaults to `cmd.exe`. In `wezterm.lua`, `config.default_prog = { "powershell.exe" }` is configured conditionally for Windows so Starship loads automatically.
+- **Link Privileges**:
+  - **Linux**: Standard symlinks (`ln -sf`) work without root elevation.
+  - **Windows**: Symlinks (`mklink`) require Administrator rights unless Developer Mode is enabled. Hard links (`mklink /H`) work without Administrator rights.
+
 
 ---
 
