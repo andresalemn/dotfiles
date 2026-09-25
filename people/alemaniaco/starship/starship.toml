@@ -9,6 +9,7 @@ $directory\
 $git_branch\
 $git_status\
 [](fg:#78dce8 bg:#2b2735)\
+$python\
 $nodejs\
 $bun\
 $rust\
@@ -33,7 +34,7 @@ truncation_symbol = "…/"
 "Pictures" = " "
 
 [git_branch]
-symbol = ""
+symbol = ""
 style = "bg:#78dce8"
 format = '[[ $symbol $branch ](fg:#221f2b bg:#78dce8)]($style)'
 
@@ -41,8 +42,13 @@ format = '[[ $symbol $branch ](fg:#221f2b bg:#78dce8)]($style)'
 style = "bg:#78dce8"
 format = '[[($all_status$ahead_behind )](fg:#221f2b bg:#78dce8)]($style)'
 
+[python]
+symbol = ""
+style = "bg:#2b2735"
+format = '[[ $symbol ($virtualenv) ](fg:#a1efe4 bg:#2b2735)]($style)'
+
 [nodejs]
-symbol = ""
+symbol = ""
 style = "bg:#2b2735"
 format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
 
