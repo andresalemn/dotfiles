@@ -1,5 +1,9 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+# Default is 30 ms. Cold starts (fresh WSL session, /mnt/c, network drives)
+# can exceed it and print "Scanning current directory timed out".
+scan_timeout = 100
+
 format = """
 [░▒▓](#ae81ff)\
 $os\

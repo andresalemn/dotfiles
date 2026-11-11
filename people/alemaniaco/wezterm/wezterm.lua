@@ -7,6 +7,15 @@ local config = wezterm.config_builder()
 local is_windows = wezterm.target_triple:find("windows") ~= nil
 
 if is_windows then
+  -- Open WSL (Ubuntu) by default. New tabs/splits also use WSL via "CurrentPaneDomain".
+  config.default_domain = "WSL:Ubuntu"
+  -- Start WSL sessions in the Linux home (~) instead of /mnt/c/Users/...
+  config.wsl_domains = wezterm.default_wsl_domains()
+  for _, dom in ipairs(config.wsl_domains) do
+    dom.default_cwd = "~"
+  end
+  -- default_prog below only applies to the local domain, so PowerShell is still
+  -- reachable from the launcher (right-click the "+" on the tab bar).
   config.default_prog = { "powershell.exe" }
   config.font_size = 14
 else
