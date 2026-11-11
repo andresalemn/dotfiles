@@ -25,9 +25,11 @@ curl -sS https://starship.rs/install.sh | sh
 
 # JetBrainsMono Nerd Font (required for icons in the prompt)
 mkdir -p ~/.local/share/fonts
-# Download from https://www.nerdfonts.com/font-downloads, then:
-cp JetBrainsMonoNerdFont*.ttf ~/.local/share/fonts/
+# Download JetBrainsMono.zip from https://www.nerdfonts.com/font-downloads, unzip it, then:
+# (wezterm.lua uses the "NL" variant — no ligatures — whose files are JetBrainsMonoNLNerdFont-*.ttf)
+cp JetBrainsMonoNLNerdFont*.ttf ~/.local/share/fonts/
 fc-cache -fv
+fc-list | grep -q "JetBrainsMonoNL Nerd Font" && echo "Font OK"   # should print "Font OK"
 
 # WezTerm — install from https://wezfurlong.org/wezterm/installation/linux/
 ```
@@ -38,7 +40,8 @@ fc-cache -fv
 winget install Starship.Starship
 
 # JetBrainsMono Nerd Font
-# Download zip from https://www.nerdfonts.com/font-downloads, extract and install TTF files.
+# Download JetBrainsMono.zip from https://www.nerdfonts.com/font-downloads, extract it,
+# and install the JetBrainsMonoNLNerdFont-*.ttf files (the "NL" ones are what wezterm.lua uses).
 
 # WezTerm
 # Download installer from https://wezfurlong.org/wezterm/installation/windows.html or `winget install wez.wezterm`
@@ -207,6 +210,9 @@ into the repo first, then re-run the [Windows hard-link commands](#windows-hard-
 
 **Icons render as boxes in WezTerm**
 Make sure `JetBrainsMonoNL Nerd Font` is installed (see [Prerequisites](#prerequisites)).
+Note the **NL**: the regular `JetBrainsMonoNerdFont-*` files are a different family, and
+WezTerm will fall back to its built-in font (with a warning) if only those are installed.
+Check on Linux with `fc-list | grep "JetBrainsMonoNL Nerd Font"`.
 
 **Icons render as boxes in VS Code's integrated terminal**
 VS Code sets its terminal font separately from WezTerm. Add this to VS Code's `settings.json`:
@@ -215,7 +221,8 @@ VS Code sets its terminal font separately from WezTerm. Add this to VS Code's `s
 ```
 
 **WezTerm config errors**
-Open the debug overlay with `CTRL+SHIFT+L` to see what failed to load.
+Open the debug overlay with `CTRL+SHIFT+ALT+L` to see what failed to load.
+(It's not the WezTerm default `CTRL+SHIFT+L`, because that key moves to the right pane in this config.)
 
 ---
 

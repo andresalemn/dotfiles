@@ -76,6 +76,9 @@ config.keys = {
   { key = "t", mods = "CTRL|SHIFT", action = wezterm.action.SpawnTab "CurrentPaneDomain" },
   { key = "Tab", mods = "CTRL", action = wezterm.action.ActivateTabRelative(1) },
   { key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
+  -- CTRL+SHIFT+L is the default debug overlay, but it's used above for pane
+  -- navigation, so the overlay moves here.
+  { key = "l", mods = "CTRL|SHIFT|ALT", action = wezterm.action.ShowDebugOverlay },
 }
 
 return config
