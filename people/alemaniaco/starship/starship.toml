@@ -7,12 +7,10 @@ scan_timeout = 100
 format = """
 [░▒▓](#ae81ff)\
 $os\
-[](bg:#3b3752 fg:#ae81ff)\
+[\ue0b4](bg:#3b3752 fg:#ae81ff)\
 $directory\
-[](fg:#3b3752 bg:#78dce8)\
-$git_branch\
-$git_status\
-[](fg:#78dce8 bg:#2b2735)\
+${custom.no_git}\
+([\ue0b4](fg:#3b3752 bg:#78dce8)$git_branch$git_status[\ue0b4](fg:#78dce8 bg:#2b2735))\
 $python\
 $nodejs\
 $bun\
@@ -20,9 +18,9 @@ $rust\
 $golang\
 $php\
 $battery\
-[](fg:#2b2735 bg:#1a1723)\
+[\ue0b4](fg:#2b2735 bg:#1a1723)\
 $time\
-[ ](fg:#1a1723)\
+[\ue0b4 ](fg:#1a1723)\
 \n$character"""
 
 [directory]
@@ -57,22 +55,22 @@ style = "bg:#2b2735"
 format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
 
 [bun]
-symbol = ""
+symbol = "\ue76f"
 style = "bg:#2b2735"
 format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
 
 [rust]
-symbol = ""
+symbol = "\ue7a8"
 style = "bg:#2b2735"
 format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
 
 [golang]
-symbol = ""
+symbol = "\ue627"
 style = "bg:#2b2735"
 format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
 
 [php]
-symbol = ""
+symbol = "\ue608"
 style = "bg:#2b2735"
 format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
 
@@ -80,7 +78,7 @@ format = '[[ $symbol ($version) ](fg:#ae81ff bg:#2b2735)]($style)'
 disabled = false
 time_format = "%R" # Hour:Minute Format
 style = "bg:#1a1723"
-format = '[[  $time ](fg:#75715e bg:#1a1723)]($style)'
+format = "[[ \uf43a $time ](fg:#75715e bg:#1a1723)]($style)"
 
 [os]
 style = "bg:#ae81ff fg:#221f2b"
@@ -135,3 +133,12 @@ style = "bg:#2b2735"
 format = '[$symbol$output ](fg:#ae81ff bg:#2b2735)'
 command = 'echo "$ROS_DISTRO"'
 when = 'test -n "$AMENT_PREFIX_PATH" || test -n "$COLCON_PREFIX_PATH"'
+
+# Starship has no if/else in `format`, so the git segment's arrows live inside a
+# ( ) group that disappears with $git_branch/$git_status outside a repo. This
+# module is the "else": it draws the directory -> languages arrow only when the
+# current folder is NOT inside a git repo.
+[custom.no_git]
+when = '! git rev-parse --git-dir >/dev/null 2>&1'
+shell = ["sh"]
+format = "[\ue0b4](fg:#3b3752 bg:#2b2735)"
