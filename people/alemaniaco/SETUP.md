@@ -6,7 +6,7 @@ My terminal setup: WezTerm + Starship, dark purple palette (Monokai-vivid-inspir
 
 1. [Prerequisites](#prerequisites)
 2. [One-Time Install (Links & Shell Setup)](#one-time-install-links--shell-setup)
-   - [Linux / macOS](#linux--macos-symlinks) · [Bash OSC 7 snippet](#bash-report-the-current-folder-to-wezterm-osc-7) · [Windows](#windows-hard-links--symlinks--powershell)
+   - [Linux / macOS](#linux--macos-symlinks) · [Bash OSC 7 snippet](#bash-report-the-current-folder-to-wezterm-osc-7) · [Windows](#windows-symlinks--powershell)
 3. [Windows + WSL](#windows--wsl-wezterm-on-windows-shell-in-wsl) — WezTerm on Windows, shell in WSL
 4. [Linux vs Windows Notes](#linux-vs-windows-notes)
 5. [Troubleshooting](#troubleshooting)
@@ -94,9 +94,20 @@ starship_precmd_user_func="__wezterm_osc7"
 > Don't add this to `PROMPT_COMMAND` ahead of Starship. It would overwrite the
 > last command's exit status, and the prompt arrow would never show a failed command.
 
-### Windows (Hard Links / Symlinks & PowerShell)
+### Windows (Symlinks & PowerShell)
 
-On Windows without Developer Mode, run in PowerShell to create hard links:
+Windows supports real symlinks, the same as Linux. Creating them without Administrator
+rights needs **Developer Mode**, which you turn on once:
+
+1. Open **Settings → System → Advanced** (called **For developers** on older Windows 11 builds).
+2. Turn on **Developer Mode**.
+3. Check it in PowerShell. This should print `1`:
+   ```powershell
+   (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock').AllowDevelopmentWithoutDevLicense
+   ```
+
+Then run this in **PowerShell 7 (`pwsh`)**. Windows PowerShell 5.1 (`powershell.exe`)
+may still ask for Administrator rights even with Developer Mode on.
 
 ```powershell
 # Run from inside people\alemaniaco, wherever the repo lives on this machine
@@ -106,12 +117,30 @@ $Dotfiles = (Get-Location).Path
 # Create config folders
 New-Item -ItemType Directory -Force -Path "$HOME\.config\wezterm"
 
-# Create hard links (works without Admin/Developer Mode; must be on the same drive as the repo)
+# Create symlinks (-Force replaces any existing file at that path; back it up first if it has changes)
+New-Item -ItemType SymbolicLink -Force -Path "$HOME\.config\starship.toml"       -Target "$Dotfiles\starship\starship.toml"
+New-Item -ItemType SymbolicLink -Force -Path "$HOME\.config\wezterm\wezterm.lua" -Target "$Dotfiles\wezterm\wezterm.lua"
+
+# Check: LinkType should be SymbolicLink, with Target pointing into the repo
+Get-Item "$HOME\.config\starship.toml", "$HOME\.config\wezterm\wezterm.lua" | Select-Object FullName, LinkType, Target
+```
+
+> Paths shown after `e.g.` are only examples — use wherever you cloned the repo.
+
+#### Fallback: hard links (no Developer Mode)
+
+If you can't enable Developer Mode, hard links work without any special rights, but
+only on the same drive as the repo:
+
+```powershell
 New-Item -ItemType HardLink -Force -Path "$HOME\.config\starship.toml"       -Target "$Dotfiles\starship\starship.toml"
 New-Item -ItemType HardLink -Force -Path "$HOME\.config\wezterm\wezterm.lua" -Target "$Dotfiles\wezterm\wezterm.lua"
 ```
 
-> Paths shown after `e.g.` are only examples — use wherever you cloned the repo.
+> **Hard links break easily.** `git pull` and many editors replace a file instead of
+> editing it in place. The repo gets the new file, and the linked config silently
+> becomes an old, separate copy. After every pull that changes these files, check the
+> link and redo it if needed (see [Troubleshooting](#links)). Symlinks don't have this problem.
 
 Then add Starship initialization to your PowerShell `$PROFILE`:
 
@@ -133,7 +162,7 @@ tab opens a WSL (Ubuntu) shell. You need **both** halves:
 
 | What | Where it lives | How to set it up |
 |------|----------------|------------------|
-| WezTerm config | **Windows**: `%USERPROFILE%\.config\wezterm\wezterm.lua` | [Windows steps](#windows-hard-links--symlinks--powershell) (hard link) |
+| WezTerm config | **Windows**: `%USERPROFILE%\.config\wezterm\wezterm.lua` | [Windows steps](#windows-symlinks--powershell) (symlink) |
 | Starship config + bash | **Inside WSL**: `~/.config/starship.toml`, `~/.bashrc` | [Linux steps](#linux--macos-symlinks) from a clone *inside* WSL, plus the [OSC 7 snippet](#bash-report-the-current-folder-to-wezterm-osc-7) |
 
 `wezterm.lua` already handles this in its `is_windows` block:
@@ -166,7 +195,7 @@ Keep the Windows clone and the WSL clone in sync with git: commit on one side an
   - **Windows**: WezTerm defaults to `cmd.exe`. `wezterm.lua` sets `config.default_prog = { "powershell.exe" }` for Windows so Starship loads in local tabs. With `default_domain = "WSL:Ubuntu"`, the default tab is WSL instead (see above).
 - **Link Privileges**:
   - **Linux**: Standard symlinks (`ln -sfn`) work without root elevation.
-  - **Windows**: Symlinks require Administrator rights unless Developer Mode is enabled. Hard links (`New-Item -ItemType HardLink` or `mklink /H`) work without Administrator rights, but only on the same drive as the repo.
+  - **Windows**: Symlinks work without Administrator rights once Developer Mode is enabled (use PowerShell 7, or `mklink` in `cmd`). Hard links (`New-Item -ItemType HardLink` or `mklink /H`) need no special rights, but only work on the same drive as the repo, and `git pull` or editor saves can quietly break them.
 - **Compositor (Linux)**: Running GNOME, so `window_background_opacity` in WezTerm works out of the box — no extra setup needed.
 
 ---
@@ -198,13 +227,18 @@ cd path/to/dotfiles/people/alemaniaco && ln -sfn "$(pwd)/starship/starship.toml"
 The same applies to `~/.config/wezterm/wezterm.lua` on native Linux.
 
 **Windows config changes don't match the repo**
-The hard link may have broken. Some editors save by replacing the file, which turns the
-link into an independent copy. Check in PowerShell:
+The config is probably a plain copy instead of a link. Check in PowerShell:
 ```powershell
-fsutil hardlink list "$HOME\.config\wezterm\wezterm.lua"
+Get-Item "$HOME\.config\starship.toml", "$HOME\.config\wezterm\wezterm.lua" | Select-Object FullName, LinkType, Target
 ```
-If only one path is listed, it's no longer linked. Copy any changes made only on Windows
-into the repo first, then re-run the [Windows hard-link commands](#windows-hard-links--symlinks--powershell).
+- `LinkType` is `SymbolicLink`: it's linked. Make sure `Target` still exists (moving or renaming the repo breaks the link).
+- `LinkType` is empty: it's a plain file. Either it was never linked, or it was a hard link
+  that broke after a `git pull` or an editor save. To tell those apart,
+  `fsutil hardlink list "$HOME\.config\wezterm\wezterm.lua"` shows two paths for a working
+  hard link and only one for a plain copy.
+
+To fix it, copy any changes made only on Windows into the repo first, then re-run the
+[Windows symlink commands](#windows-symlinks--powershell).
 
 ### Fonts & WezTerm
 
